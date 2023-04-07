@@ -1,0 +1,68 @@
+﻿schema {
+    query: Query
+    mutation: Mutation
+    subscription: Subscription
+}
+
+type Getvideostream {
+    camera_timestamp: String
+    current_count: Int
+    total_count: Int
+    update_timestamp: String
+    video_stream_id: String!
+}
+
+type Mutation {
+    createvideostream(input: CreatevideostreamInput!): videostream
+    deletevideostream(input: DeletevideostreamInput!): videostream
+    updatevideostream(input: UpdatevideostreamInput!): videostream
+}
+
+type Query {
+    getvideostream(video_stream_id: String!): videostream
+}
+
+type Subscription {
+    onCreatevideostream(
+        camera_timestamp: String
+        current_count: Int
+        total_count: Int
+        update_timestamp: String
+        video_stream_id: String
+    ): videostream @aws_subscribe(mutations: ["createvideostream"])
+    onUpdatevideostream(
+        camera_timestamp: String
+        current_count: Int
+        total_count: Int
+        update_timestamp: String
+        video_stream_id: String
+    ): videostream @aws_subscribe(mutations: ["updatevideostream"])
+}
+
+type videostream {
+    camera_timestamp: String
+    current_count: Int
+    total_count: Int
+    update_timestamp: String
+    video_stream_id: String!
+}
+
+input CreatevideostreamInput {
+    camera_timestamp: String
+    current_count: Int
+    total_count: Int
+    update_timestamp: String
+    video_stream_id: String!
+}
+
+input DeletevideostreamInput {
+    video_stream_id: String!
+}
+
+input UpdatevideostreamInput {
+    camera_timestamp: String
+    current_count: Int
+    total_count: Int
+    update_timestamp: String
+    video_stream_id: String!
+}

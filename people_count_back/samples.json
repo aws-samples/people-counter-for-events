@@ -1,0 +1,353 @@
+{
+    "Parameters" : {
+    "BucketName" : {
+      "Type" : "String",
+      "Description": "Name for S3Bucket"
+    }
+  },
+    "Resources": {
+     "people_count_lambdaiam": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+       "AssumeRolePolicyDocument": {
+        "Statement": [
+         {
+          "Action": "sts:AssumeRole",
+          "Effect": "Allow",
+          "Principal": {
+           "Service": "lambda.amazonaws.com"
+          }
+         }
+        ],
+        "Version": "2012-10-17"
+       },
+       "ManagedPolicyArns": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":iam::aws:policy/AmazonDynamoDBFullAccess"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":iam::aws:policy/CloudWatchFullAccess"
+          ]
+         ]
+        },
+        {
+          "Fn::Join": [
+           "",
+           [
+            "arn:",
+            {
+             "Ref": "AWS::Partition"
+            },
+            ":iam::aws:policy/AmazonKinesisFullAccess"
+           ]
+          ]
+         },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":iam::aws:policy/AWSAppSyncInvokeFullAccess"
+          ]
+         ]
+        }
+       ],
+       "RoleName": "people_count_lambda_role"
+      }
+     },
+     "people_count_lambdaiamDefaultPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+       "PolicyDocument": {
+        "Statement": [
+         {
+          "Action": [
+           "kinesis:DescribeStream",
+           "kinesis:DescribeStreamSummary",
+           "kinesis:GetRecords",
+           "kinesis:GetShardIterator",
+           "kinesis:ListShards",
+           "kinesis:ListStreams",
+           "kinesis:SubscribeToShard"
+          ],
+          "Effect": "Allow",
+          "Resource": {
+           "Fn::GetAtt": [
+            "KinesisStream",
+            "Arn"
+           ]
+          }
+         }
+        ],
+        "Version": "2012-10-17"
+       },
+       "PolicyName": "people_count_lambdaiamDefaultPolicy",
+       "Roles": [
+        {
+         "Ref": "people_count_lambdaiam"
+        }
+       ]
+      }
+     },
+     "KinesisStream": {
+      "Type": "AWS::Kinesis::Stream",
+      "Properties": {
+       "Name": "people_count_stream",
+       "RetentionPeriodHours": 24,
+       "ShardCount": 1,
+       "StreamModeDetails": {
+        "StreamMode": "PROVISIONED"
+       }
+      }
+     },
+     "VideoStreamTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+       "KeySchema": [
+        {
+         "AttributeName": "video_stream_id",
+         "KeyType": "HASH"
+        }
+       ],
+       "AttributeDefinitions": [
+        {
+         "AttributeName": "video_stream_id",
+         "AttributeType": "S"
+        }
+       ],
+       "ProvisionedThroughput": {
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+       },
+       "TableName": "videostream"
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain"
+     },
+     "appSyncAPI": {
+      "Type": "AWS::AppSync::GraphQLApi",
+      "Properties": {
+       "AuthenticationType": "API_KEY",
+       "Name": "people_count_appsync"
+      }
+     },
+     "ApiKey": {
+      "Type": "AWS::AppSync::ApiKey",
+      "Properties": {
+       "ApiId": {
+        "Fn::GetAtt": [
+         "appSyncAPI",
+         "ApiId"
+        ]
+       },
+       "ApiKeyId": "apiKeyId"
+      }
+     },
+     "appsyncSchema": {
+      "Type": "AWS::AppSync::GraphQLSchema",
+      "Properties": {
+       "ApiId": {
+        "Fn::GetAtt": [
+         "appSyncAPI",
+         "ApiId"
+        ]
+       },
+       "Definition": "type videostream {\n    video_stream_id: String!\n    current_count: Int\n    total_count: Int\n    camera_timestamp: String\n    update_timestamp: String\n  }\n  type Query {\n    getvideostream(video_stream_id: String!): videostream\n  }\n  type Mutation {\n    createvideostream(input:CreatevideostreamInput!): videostream\n    updatevideostream(input:UpdatevideostreamInput!): videostream\n    deletevideostream(input : DeletevideostreamInput!): videostream\n  }\n  type Subscription {\n    onCreatevideostream(\n      current_count: Int,\n      total_count: Int,\n      camera_timestamp: String,\n      update_timestamp: String,\n      video_stream_id: String\n    ): videostream\n      @aws_subscribe(mutations: [\"createvideostream\"])\n\n    onUpdatevideostream(\n      current_count: Int,\n      total_count: Int,\n      camera_timestamp: String,\n      update_timestamp: String,\n      video_stream_id: String\n    ): videostream\n      @aws_subscribe(mutations:[\"updatevideostream\"])\n  }\n\n  input CreatevideostreamInput {\n    video_stream_id: String!\n    current_count: Int\n    total_count: Int\n    camera_timestamp: String\n    update_timestamp: String\n    }\n  input UpdatevideostreamInput {\n    video_stream_id: String!\n    current_count: Int\n    total_count: Int\n    camera_timestamp: String\n    update_timestamp: String\n    }\n  input DeletevideostreamInput {\n    video_stream_id: String!        \n    }\n\n  schema {\n    query: Query\n    mutation: Mutation\n    subscription: Subscription\n   }\n    "
+      }
+     },
+     "AppSyncRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+       "AssumeRolePolicyDocument": {
+        "Statement": [
+         {
+          "Action": "sts:AssumeRole",
+          "Effect": "Allow",
+          "Principal": {
+           "Service": "appsync.amazonaws.com"
+          }
+         }
+        ],
+        "Version": "2012-10-17"
+       },
+       "ManagedPolicyArns": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":iam::aws:policy/AmazonDynamoDBFullAccess"
+          ]
+         ]
+        }
+       ],
+       "RoleName": "people_count_appsync_role"
+      }
+     },
+     "CfnDataSource": {
+      "Type": "AWS::AppSync::DataSource",
+      "Properties": {
+       "ApiId": {
+        "Fn::GetAtt": [
+         "appSyncAPI",
+         "ApiId"
+        ]
+       },
+       "Name": "videostreamTable",
+       "Type": "AMAZON_DYNAMODB",
+       "DynamoDBConfig": {
+        "AwsRegion": "ap-northeast-1",
+        "TableName": {
+         "Ref": "VideoStreamTable"
+        }
+       },
+       "ServiceRoleArn": {
+        "Fn::GetAtt": [
+         "AppSyncRole",
+         "Arn"
+        ]
+       }
+      }
+     },
+     "updateMutationResolver": {
+      "Type": "AWS::AppSync::Resolver",
+      "Properties": {
+       "ApiId": {
+        "Fn::GetAtt": [
+         "appSyncAPI",
+         "ApiId"
+        ]
+       },
+       "FieldName": "updatevideostream",
+       "TypeName": "Mutation",
+       "DataSourceName": "videostreamTable",
+       "RequestMappingTemplate": "{\n    \"version\": \"2017-02-28\",\n    \"operation\": \"UpdateItem\",\n    \"key\": {\n      \"video_stream_id\": { \"S\": $util.toJson($ctx.args.input.video_stream_id)},\n    },\n    \"update\" : { \n      \"expression\" : \"ADD current_count :current_val, total_count :total_val SET camera_timestamp = :camera_timestamp, update_timestamp =:update_timestamp\",\n      \"expressionValues\" : {\n          \":current_val\" : { \"N\" :  $util.toJson($ctx.args.input.current_count) },\n          \":total_val\" : { \"N\" :  $util.toJson($ctx.args.input.total_count) }, \n          \":camera_timestamp\": { \"S\" : $util.toJson($ctx.args.input.camera_timestamp)},\n          \":update_timestamp\": { \"S\" : $util.toJson($ctx.args.input.update_timestamp)},\n      }\n  }\n  }",
+       "ResponseMappingTemplate": "$util.toJson($ctx.result)"
+      },
+      "DependsOn": [
+       "appsyncSchema"
+      ]
+     },
+     "putMutationResolver": {
+      "Type": "AWS::AppSync::Resolver",
+      "Properties": {
+       "ApiId": {
+        "Fn::GetAtt": [
+         "appSyncAPI",
+         "ApiId"
+        ]
+       },
+       "FieldName": "createvideostream",
+       "TypeName": "Mutation",
+       "DataSourceName": "videostreamTable",
+       "RequestMappingTemplate": "\n  {\n    \"version\": \"2017-02-28\",\n    \"operation\": \"PutItem\",\n    \"key\": {\n      \"video_stream_id\": { \"S\": $util.toJson($ctx.args.input.video_stream_id)},\n    },\n    \"attributeValues\": $util.dynamodb.toMapValuesJson($ctx.args.input),\n    \"condition\": {\n    \"expression\": \"attribute_not_exists(#video_stream_id)\",\n    \"expressionNames\": {\n      \"#video_stream_id\": \"video_stream_id\",\n    },\n  },\n}",
+       "ResponseMappingTemplate": "$util.toJson($ctx.result)"
+      },
+      "DependsOn": [
+       "appsyncSchema"
+      ]
+     },
+     "getvideostreamQueryResolver": {
+      "Type": "AWS::AppSync::Resolver",
+      "Properties": {
+       "ApiId": {
+        "Fn::GetAtt": [
+         "appSyncAPI",
+         "ApiId"
+        ]
+       },
+       "FieldName": "getvideostream",
+       "TypeName": "Query",
+       "DataSourceName": "videostreamTable",
+       "RequestMappingTemplate": "\n  {\n    \"version\" : \"2017-02-28\", \n\t  \"operation\" : \"GetItem\", \n    \"key\" : { \n    \t\"video_stream_id\" : $util.dynamodb.toDynamoDBJson($ctx.args.video_stream_id) \n        }, \n}",
+       "ResponseMappingTemplate": "$util.toJson($ctx.result)"
+      },
+      "DependsOn": [
+       "appsyncSchema"
+      ]
+     },
+     
+     "IndexHandler": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+       "Code": {
+        "S3Bucket": {
+            "Ref": "BucketName"
+        },
+        "S3Key": "index.zip"
+       },
+       "Role": {
+        "Fn::GetAtt": [
+         "people_count_lambdaiam",
+         "Arn"
+        ]
+       },
+       "Environment": {
+        "Variables": {
+         "GRAPHQL_URL": {
+          "Fn::GetAtt": [
+           "appSyncAPI",
+           "GraphQLUrl"
+          ]
+         },
+         "API_KEY": {
+          "Fn::GetAtt": [
+           "ApiKey",
+           "ApiKey"
+          ]
+         }
+        }
+       },
+       "FunctionName": "people_count_function",
+       "Handler": "index.handler",
+       "MemorySize": 512,
+       "Runtime": "python3.8"
+      },
+      "DependsOn": [
+       "people_count_lambdaiamDefaultPolicy",
+       "people_count_lambdaiam"
+      ]
+     },
+     "IndexHandlerKinesisEventSourceBackendStackKinesisStream": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "Properties": {
+       "FunctionName": {
+        "Ref": "IndexHandler"
+       },
+       "BatchSize": 100,
+       "EventSourceArn": {
+        "Fn::GetAtt": [
+         "KinesisStream",
+         "Arn"
+        ]
+       },
+       "MaximumBatchingWindowInSeconds": 3,
+       "MaximumRetryAttempts": 1,
+       "StartingPosition": "TRIM_HORIZON"
+      }
+    }
+    }
+   }
+   

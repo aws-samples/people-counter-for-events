@@ -1,0 +1,16 @@
+{
+  "component": {
+    "com.vizcounter.people_counter": {
+      "author": "yourname",
+      "version": "1.0.0",
+      "build": {
+        "build_system": "zip"
+      },
+      "publish": {
+        "bucket": "write-unique-bucketname-component-is-stored-here",
+        "region": "ap-northeast-1"
+      }
+    }
+  },
+  "gdk_version": "1.0.0"
+}

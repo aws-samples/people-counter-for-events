@@ -1,0 +1,10 @@
+*.pyc
+.DS_Store
+.venv
+__pycache__
+models/*
+!models/coco_label.txt
+!models/ssd_mobilenet_v2_coco
+videos/*
+!videos/test.mp4
+output/*

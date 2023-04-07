@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Cloud9 Deploy
+
+Resources:
+    C9Environment:
+        Type: AWS::Cloud9::EnvironmentEC2
+        Properties:
+            AutomaticStopTimeMinutes: 120
+            Description: Cloud9 Environment for Workshop
+            ImageId: amazonlinux-2-x86_64
+            InstanceType: t3.small
+            Name: WorkshopCloud9

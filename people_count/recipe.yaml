@@ -1,0 +1,18 @@
+---
+RecipeFormatVersion: "2020-01-25"
+ComponentName: "{COMPONENT_NAME}"
+ComponentVersion: "{COMPONENT_VERSION}"
+ComponentDescription: "Count number of people who enter an area"
+ComponentPublisher: "{COMPONENT_AUTHOR}"
+ComponentDependencies:
+  aws.greengrass.StreamManager:
+    VersionRequirement: "^2.0.0"
+Manifests:
+  - Platform:
+      os: all
+    Artifacts:
+      - URI: "s3://BUCKET_NAME/COMPONENT_NAME/COMPONENT_VERSION/people_count.zip"
+        Unarchive: ZIP
+    Lifecycle:
+      Install: pip install -r {artifacts:decompressedPath}/people_count/requirements.txt
+      Run: "python -u {artifacts:decompressedPath}/people_count/people_counter.py -p {artifacts:decompressedPath}/people_count/models/ssd_mobilenet_v2_coco/output.pbtxt -m {artifacts:decompressedPath}/people_count/models/ssd_mobilenet_v2_coco/frozen_inference_graph.pb -t {artifacts:decompressedPath}/people_count/models/coco_label.txt -s 500 --max_distance 100 --max_disappeared 80 --stream people_count_stream --video_stream_id 0 --area 0,0,800,800"
