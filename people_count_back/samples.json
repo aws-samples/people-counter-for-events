@@ -139,9 +139,7 @@
       "WriteCapacityUnits": 5
      },
      "TableName": "videostream"
-    },
-    "UpdateReplacePolicy": "Retain",
-    "DeletionPolicy": "Retain"
+    }
    },
    "appSyncAPI": {
     "Type": "AWS::AppSync::GraphQLApi",
