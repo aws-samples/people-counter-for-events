@@ -1,6 +1,6 @@
 # people-counter-for-events
 
-[Builders.Flash1でも紹介しています](https://xxx)
+[Builders.Flash記事](https://xxx)
 
 people-counter-for-events は AWS サービスを用いて、カメラで撮影した映像を ML で人物認識することでリアルタイムに人の入退場をカウントするシステムを構成するレポジトリです。このシステムをイベントブースに導入することで、ブース全体の総来場者数や、その中にある各展示毎に現在の人気度の把握や可視化することを目的にしています。
 
