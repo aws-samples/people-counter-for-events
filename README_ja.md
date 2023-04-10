@@ -1,13 +1,8 @@
-# Baseline Environment on AWS
-
-[![release](https://img.shields.io/github/v/release/aws-samples/baseline-environment-on-aws)](https://github.com/aws-samples/baseline-environment-on-aws/releases)
-[![build](https://github.com/aws-samples/baseline-environment-on-aws/workflows/build/badge.svg)](https://github.com/aws-samples/baseline-environment-on-aws/actions?query=workflow%3A"build")
+# people-counter-for-events
 
 [Builders.Flash](https://xxx)
 
-people-counter-for-events は AWS サービスを用いて、カメラで撮影した映像を ML で人物認識することでリアルタイムに人の入退場をカウントするシステムを構成するレポジトリです。このシステムをイベントブースに導入することで、ブース全体の総来場者数や、その中にある各展示毎に現在の人気度の把握や可視化する個よを目的にしています。
-
-Jump to | [Changelog](CHANGELOG.md) | [HowTo](doc/HowTo_ja.md) | [マルチアカウント環境へのデプロイ](/doc/DeployToControlTower_ja.md) | [Standalone 版からマルチアカウント版への移行](doc/Standalone2ControlTower_ja.md) | [パイプラインによるデプロイ](doc/PipelineDeployment_ja.md) |
+people-counter-for-events は AWS サービスを用いて、カメラで撮影した映像を ML で人物認識することでリアルタイムに人の入退場をカウントするシステムを構成するレポジトリです。このシステムをイベントブースに導入することで、ブース全体の総来場者数や、その中にある各展示毎に現在の人気度の把握や可視化することを目的にしています。
 
 ## アーキテクチャ
 
@@ -28,11 +23,11 @@ Jump to | [Changelog](CHANGELOG.md) | [HowTo](doc/HowTo_ja.md) | [マルチア�
 
 
 AWS Cloud9 の環境を立ち上げるためにするために、AWS CloudFormation のスタックを作成します。テンプレートでの指定では、「テンプレートファイルのアップロード」 を選択し、先ほどダウンロードした cloud9CloudFormation.yaml をアップロードします。
-![cloud9Deploy1](doc/images/cloud9Deploy1.png)
+![cloud9Deploy1](docs/images/cloud9Deploy1.png)
 
 任意のスタック名を入力し、その他の設定はデフォルトのままにして、スタックをデプロイします。
 デプロイ完了後、AWS Cloud9 のコンソールに移動し、テンプレートによって作成された「WorkshopCloud9」環境に接続します。
-![cloud9Deploy2](doc/images/cloud9Deploy2.png)
+![cloud9Deploy2](docs/images/cloud9Deploy2.png)
 
 AWS Cloud9 コンソールのターミナルから以下のコマンドを実行し、GitHub から[バックエンド用](people_count_back/)のソースをクローンします。
 AWS Cloud9 の操作についての詳細は、[本リンク](https://docs.aws.amazon.com/ja_jp/cloud9/latest/user-guide/tour-ide.html)をご覧ください。
@@ -57,7 +52,7 @@ cd /home/ec2-user/environment/people-counter-for-events/people_count_back
 
 AWS AppSync の認証情報を設定するため、/home/ec2-user/environment/people-counter-for-events/people_count_front/src/aws-exports.jsを以下のように編集します。
 
-```json
+```
 const awsmobile = {
     aws_appsync_graphqlEndpoint: "<AWS AppSync の API URL>",
     aws_appsync_region: "ap-northeast-1",
@@ -67,18 +62,19 @@ const awsmobile = {
 
 export default awsmobile;
 ```
+
 #### AWS AppSync のAPI URL 、API KEY の確認方法
 AWS コンソールから AWS AppSync を検索し、AWS AppSync のサービス画面に遷移します。
-![AppSyncSetting1](doc/images/AppSyncSetting1.png)
+![AppSyncSetting1](docs/images/AppSyncSetting1.png)
 
 API の項目から、「samples_appsync」を選択し、設定をクリックします。
 以下項目の内容を控えておきます。
 - API URL
 - API KEY
-![AppSyncSetting2](doc/images/AppSyncSetting2.png)
+![AppSyncSetting2](docs/images/AppSyncSetting2.png)
 
 上記 API URL、API KEY の値をそれぞれ aws_appsync_graphqlEndpoint、aws_appsync_apiKey に貼り付けてください。
-![AppSyncSetting3](doc/images/AppSyncSetting3.png)
+![AppSyncSetting3](dosc/images/AppSyncSetting3.png)
 
 
 以下のコマンドでフロント UI を立ち上げます。
@@ -88,7 +84,7 @@ npm run serve
 ```
 
 正常的に起動されたら Cloud9 の上段にある「Preview」ボタンをクリックし UI を開きます。※今回のハンズオンでは、 AWS Cloud9 を使用しましたが、ローカル環境での動作も可能です。
-![frontend](doc/images/frontend.png)
+![frontend](docs/images/frontend.png)
 
 「総来場者数」には検知エリアに入場した合計人数、「現在の来場者数」には検知エリア内の現在人数が表示されます。この後の手順でカメラ映像から人検知を行い、その結果がリアルタイムに反映されることを確認いただきます。
 
@@ -98,7 +94,7 @@ npm run serve
 
 AWS AppSync での処理についてご説明します。
 まず、 Amazon Lambda から AWS AppSync にデータを送信すると、updatevideostream の Mutation リゾルバが実行されます。処理の内容としては、「current_count」及び「total_count」の値をインクリメントし、「camera_timestamp」及び「 update_timestamp」の値を最新の時間に更新しています。
-```json
+```
 {
     "version": "2017-02-28",
     "operation": "UpdateItem",
@@ -117,7 +113,7 @@ AWS AppSync での処理についてご説明します。
   }
 ```
 Mutation が実行されると  Subscription が動作し、データを取得します。 Mutation と異なり、リゾルバを作成しておく必要はなく、スキーマの設定をもとにサブスクライブされます。今回は、このサブスクライブ内容をフロントエンドで受け取ることで、 Amazon DynamoDB に直接クエリする必要なく最新データを取得することが可能になっています。
-```json
+```
 type Subscription {
       :
     （省略）
@@ -134,7 +130,7 @@ type Subscription {
 ```
 
 フロントエンドから最初に AWS DynamoDB に格納されているアイテムのデータを取得する必要があるため、getvideostream に Query リゾルバも作成しています。プライマリキーを指定して Query を実行することでデータを取得することができます。
-```json
+```
 {
     "version" : "2017-02-28", 
     "operation" : "GetItem", 
