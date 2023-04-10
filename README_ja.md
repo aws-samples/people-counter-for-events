@@ -229,6 +229,7 @@ python .\people_counter.py -p models/ssd_mobilenet_v2_coco/output.pbtxt -m model
 
 次に検知エリアを設定します。エリアを指定するには先ほどの引数に、—area パラメータを追加します。
 座標系は以下の画像のようになっています。対象となるエリアを {左端のx座標 (x1)},{上端のy座標 (y1)},{右端のx座標 (x2)},{下端のy座標 (y2)}という形式で指定します。(例: 0,0,100,100)
+
 ![detection1](docs/images/detection1.png)
 ![detection2](docs/images/detection2.png)
 
