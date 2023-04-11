@@ -29,7 +29,7 @@ AWS Cloud9 の環境を立ち上げるためにするために、AWS CloudFormat
 デプロイ完了後、AWS Cloud9 のコンソールに移動し、テンプレートによって作成された「WorkshopCloud9」環境に接続します。
 ![cloud9Deploy2](docs/images/cloud9Deploy2.png)
 
-AWS Cloud9 コンソールのターミナルから以下のコマンドを実行し、GitHub から[バックエンド用](people_count_back/)のソースをクローンします。
+AWS Cloud9 コンソールのターミナルから以下のコマンドを実行し、[GitHub](https://github.com/aws-samples/people-counter-for-events) からソースをクローンします。
 AWS Cloud9 の操作についての詳細は、[本リンク](https://docs.aws.amazon.com/ja_jp/cloud9/latest/user-guide/tour-ide.html)をご覧ください。
 ```sh
 cd /home/ec2-user/environment
@@ -83,7 +83,9 @@ cd /home/ec2-user/environment/people-counter-for-events/people_count_front
 npm run serve
 ```
 
-正常的に起動されたら Cloud9 の上段にある「Preview」ボタンをクリックし UI を開きます。※今回のハンズオンでは、 AWS Cloud9 を使用しましたが、ローカル環境での動作も可能です。
+正常的に起動されたら Cloud9 の上段にある「Preview」ボタンをクリックし UI を開きます。
+> NOTE:
+> 今回のハンズオンでは、 AWS Cloud9 を使用しましたが、ローカル環境での動作も可能です。
 ![frontend](docs/images/frontend.png)
 
 「総来場者数」には検知エリアに入場した合計人数、「現在の来場者数」には検知エリア内の現在人数が表示されます。この後の手順でカメラ映像から人検知を行い、その結果がリアルタイムに反映されることを確認いただきます。
@@ -152,7 +154,7 @@ type Subscription {
 ![greengrassSetting1](docs/images/greengrassSetting1.png)
 
 AWS IoT Greengrass のコアデバイスに必要な IAM ポリシーをアタッチします。
-AWS IoT のコンソール画面から 「セキュリティ」→「ロールエイリアス」→「GreengrassV2TokenExchangeRoleAlias」 を選択します。IAM ロール「GreengrassV2TokenExchangeRole」をクリックします。
+AWS IoT のコンソール画面から [セキュリティ]→[ロールエイリアス]→[GreengrassV2TokenExchangeRoleAlias] を選択します。IAM ロール「GreengrassV2TokenExchangeRole」をクリックします。
 
 ![greengrassSetting2](docs/images/greengrassSetting2.png)
 
@@ -171,20 +173,20 @@ Python の公式サイトから、Windows 向けの [Python 3.10.10](https://www
 > Add python.exe to PATH が、チェックされていることを確認します。
 ![pythonInstall1](docs/images/pythonInstall1.png)
 
-手順 3-1 で作成したユーザー「ggc_user」 が Python を扱えるようにするため、インストール時には [Install Python 3.10 for all users] と [Add Python on environment variables] にチェックを入れ、全ユーザをインストール対象にしてください。
-インストール先のパスとして「C:\Program Files\Python310」を指定します。
+「a. AWS IoT Greengrass の設定」で作成したユーザー「ggc_user」 が Python を扱えるようにするため、インストール時には [Install Python 3.10 for all users] と [Add Python on environment variables] にチェックを入れ、全ユーザをインストール対象にしてください。
+インストール先のパスとして C:\Program Files\Python310 を指定します。
 > NOTE: 
-> ここからの手順では、上記パスにPython 3.10 系がインストールされていることを前提とします。
+> ここからの手順では、上記パスに Python 3.10 系がインストールされていることを前提とします。
 ![pythonInstall2](docs/images/pythonInstall2.png)
 
 #### ライブラリのインストール
 
-Visual Studio Community 2022 をインストールし、「C++によるデスクトップ開発」をインストールします。これは、後ほどインストールする ”dlib“ のコンパイルで使用します。
+[Visual Studio Community 2022](https://visualstudio.microsoft.com/ja/vs/community/) をインストールし、「C++によるデスクトップ開発」をインストールします。これは、後ほどインストールする ”dlib“ のコンパイルで使用します。
 ![virtualstudio](docs/images/virtualstudio.png)
 
 PowerShell を、[管理者として実行する] を選択して開きます。
 > NOTE:  
-> PowerShell でのすべての作業は、管理者ユーザで実行してください。本作業により 「C:\Program Files\Python310\」 配下に、ライブラリがインストールされます*
+> PowerShell でのすべての作業は、管理者ユーザで実行してください。本作業により C:\Program Files\Python310\ 配下に、ライブラリがインストールされます
 
 
 pip コマンドで、cmake をインストールします。
@@ -201,7 +203,7 @@ pip show cmake
 
 AWS IoT Greengrasss のコンポーネントを作成するために、 GDK CLI (AWS IoT Greengrass Development Kit Command-Line Interface) をインストールします。インストール方法は、[本URL](https://docs.aws.amazon.com/ja_jp/greengrass/v2/developerguide/greengrass-development-kit-cli.html) を参照してください。
 
-people_count をクローンしたフォルダへ移動し、 pip を使って requirements_dev.txt 内の必要なライブラリをインストールします (requirements.txt とは異なるため注意してください)。requirements_dev.txt では、動作確認のため GUI での表示が可能なライブラリをインストールします。以下の例では Desktop フォルダに people_count をダウンロードした想定で進めています。
+people_count をクローンしたフォルダへ移動し、 pip を使って requirements_dev.txt 内の必要なライブラリをインストールします (requirements.txt とは異なるため注意してください)。requirements_dev.txt では、動作確認のため GUI での表示が可能なライブラリをインストールします。以下の例では Desktop フォルダ配下に people_count をダウンロードした想定で進めています。
 
 ```sh
 cd ~/Desktop/people_count
@@ -250,7 +252,7 @@ Run: "python -u {artifacts:decompressedPath}/people_count/people_counter.py -p {
 ```
 テキストエディタで gdk-config.json を開き、4 行目と 10 行目の内容を編集します。4 行目の＜Authorの名前＞と10 行目の＜S3 バケット名＞をそれぞれ任意の Author 名、S3 バケット名に書き換えます。S3 バケット名はユニークかつ、下記の命名規則に従う必要があります。 この処理によって、新たに S3 バケットが作成され、 AWS IoT Greengrass コンポーネントのアーティファクトが格納されます。
 > NOTE: 
->S3 バケット名の命名規則
+> S3 バケット名の命名規則
 > - バケット名は 3 ～ 63 文字の長さで、小文字、数字、ピリオド、ダッシュのみを使用できます。
 > - バケット名の各ラベルは、小文字または数字で始まっている必要があります。
 > - バケット名では、アンダースコア、末尾のダッシュ、連続するピリオド、隣接するピリオドとダッシュは使用できません。
@@ -296,7 +298,7 @@ gdk component publish
 ### e. デプロイ準備
 
 デプロイを作成します。
-AWS IoT Core のコンソールの左側のメニューより 、「Greengrass デバイス」 >「デプロイ]」を選択します。
+AWS IoT Core のコンソールの左側のメニューより 、[Greengrass デバイス] >[デプロイ]を選択します。
 画面右上の「作成」をクリックします。
 ![deployComponent1](docs/images/deployComponent1.png)
 
