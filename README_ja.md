@@ -95,7 +95,7 @@ npm run serve
 ### b. AWS AppSync の動作について
 
 AWS AppSync での処理についてご説明します。
-まず、 Amazon Lambda から AWS AppSync にデータを送信すると、updatevideostream の Mutation リゾルバが実行されます。処理の内容としては、「current_count」及び「total_count」の値をインクリメントし、「camera_timestamp」及び「 update_timestamp」の値を最新の時間に更新しています。
+まず、 AWS Lambda から AWS AppSync にデータを送信すると、updatevideostream の Mutation リゾルバが実行されます。処理の内容としては、「current_count」及び「total_count」の値をインクリメントし、「camera_timestamp」及び「 update_timestamp」の値を最新の時間に更新しています。
 ```
 {
     "version": "2017-02-28",
@@ -131,7 +131,7 @@ type Subscription {
 }
 ```
 
-フロントエンドから最初に AWS DynamoDB に格納されているアイテムのデータを取得する必要があるため、getvideostream に Query リゾルバも作成しています。プライマリキーを指定して Query を実行することでデータを取得することができます。
+フロントエンドから最初に Amazon DynamoDB に格納されているアイテムのデータを取得する必要があるため、getvideostream に Query リゾルバも作成しています。プライマリキーを指定して Query を実行することでデータを取得することができます。
 ```
 {
     "version" : "2017-02-28", 
