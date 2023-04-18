@@ -316,6 +316,23 @@ AWS IoT Core のコンソールの左側のメニューより 、[Greengrass デ
 
 ![complete](docs/images/complete.png)
 
+## よくある質問集
+
+1. カメラが起動しない
+  
+
+1. dlib のインストールに失敗する
+  Vsiual Studio Community 2022 で「C++によるデスクトップ開発」がインストールされてないか、cmake のインストール先が適切でない可能性があります。
+  cmake のインストール先が dlib のインストール時に使用している python 配下になっていない場合、再度、管理者ユーザでPowershellを実行し、cmeke をインストールしなおしてください。本手順では、 cmake の インストール先は、C:\Program Files\Python310\Lib\site-packages 配下になっています。　
+
+1. Kinesis にデータが送信されない
+  IAM ロール「GreengrassV2TokenExchangeRole」に、以下の IAM ポリシーをアタッチされていることを確認してください。
+  - AmazonKinesisFullAccess
+　
+1. ggc_user で python にパスが通っておらず component broken となる
+    python のインストールパスが適切か確認してください。ggc_user が実行できるパスになっている必要があります。
+    本手順では、C:\Program Files\Python310に python をインストールしています。
+
 ## リソースの削除
 
 使ったリソースをそのままにしておくと、利用していなくとも S3 バケットなど、コストが継続的に掛かるサービスもあるため、不要になった場合は削除してください。
