@@ -320,6 +320,8 @@ AWS IoT Core のコンソールの左側のメニューより 、[Greengrass デ
 
 1. カメラが起動しない
 
+    
+
 
 1. dlib のインストールに失敗する
 
@@ -328,13 +330,13 @@ AWS IoT Core のコンソールの左側のメニューより 、[Greengrass デ
 
 1. Kinesis にデータが送信されない
 
-        IAM ロール「GreengrassV2TokenExchangeRole」に、以下の IAM ポリシーをアタッチされていることを確認してください。
-       - AmazonKinesisFullAccess
+    IAM ロール「GreengrassV2TokenExchangeRole」に、以下の IAM ポリシーをアタッチされていることを確認してください。
+   - AmazonKinesisFullAccess
 　
 1. ggc_user で python にパスが通っておらず component broken となる
 
-        python のインストールパスが適切か確認してください。ggc_user が実行できるパスになっている必要があります。
-        本手順では、C:\Program Files\Python310に python をインストールしています。
+    python のインストールパスが適切か確認してください。ggc_user が実行できるパスになっている必要があります。
+    本手順では、C:\Program Files\Python310に python をインストールしています。
 
 ## リソースの削除
 
