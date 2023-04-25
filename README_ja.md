@@ -74,7 +74,7 @@ API の項目から、「samples_appsync」を選択し、設定をクリック�
 ![AppSyncSetting2](docs/images/AppSyncSetting2.png)
 
 上記 API URL、API KEY の値をそれぞれ aws_appsync_graphqlEndpoint、aws_appsync_apiKey に貼り付けてください。
-![AppSyncSetting3](dosc/images/AppSyncSetting3.png)
+![AppSyncSetting3](docs/images/AppSyncSetting3.png)
 
 
 以下のコマンドでフロント UI を立ち上げます。
@@ -330,7 +330,7 @@ AWS IoT Core のコンソールの左側のメニューより 、[Greengrass デ
 
 1. Kinesis にデータが送信されない
 
-    IAM ロール「GreengrassV2TokenExchangeRole」に、以下の IAM ポリシーをアタッチされていることを確認してください。
+    IAM ロール「GreengrassV2TokenExchangeRole」に、以下の IAM ポリシーがアタッチされていることを確認してください。
    - AmazonKinesisFullAccess
 　
 1. ggc_user で python にパスが通っておらず component broken となる
