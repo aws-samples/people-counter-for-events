@@ -318,7 +318,8 @@ AWS IoT Core のコンソールの左側のメニューより 、[Greengrass デ
 
 ## よくある質問集
 
-1. "Couldn't read video stream …"といったメッセージが表示され、カメラが起動しない
+1. "Couldn't read video stream …"といったメッセージが表示され、カメラが起動しない  
+    
     映像入力として指定されたパスが間違っている可能性があります。
     内蔵Webカメラをお使いの場合は`-i` オプションを削除することで動作する可能性があります。
     インターネットカメラをお使いの場合は、製造元のドキュメントをご参照いただき、正しいRTSPストリームURLを指定してください。
@@ -339,6 +340,7 @@ AWS IoT Core のコンソールの左側のメニューより 、[Greengrass デ
     本手順では、C:\Program Files\Python310に python をインストールしています。
 
 1. 独自に開発した機械学習モデルを使いたい
+    
     本プログラムでは Tensorflow で学習したモデルの frozen graph を変換することで独自モデルも利用可能です。詳しくは[OpenCVのドキュメント](https://docs.opencv.org/4.x/d1/d8f/tf_cls_tutorial_dnn_conversion.html) をご参照ください。
     
 ## リソースの削除
