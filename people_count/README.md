@@ -1,7 +1,7 @@
-# VizCounter PeopleCount Component
-VizCounter PeopleCount Component works on AWS Greengrass v2. This program utilizes AI to detect people captured on camera, counting the number of individuals entering and exiting a designated area. With this capability, the software enables efficient and reliable headcounting, perfect for monitoring attendance at events like exhibitions and conferences.
+# People counter for events component
+People counter for events Component works on AWS Greengrass v2. This program utilizes AI to detect people captured on camera, counting the number of individuals entering and exiting a designated area. With this capability, the software enables efficient and reliable headcounting, perfect for monitoring attendance at events like exhibitions and conferences.
 
-VizCounter PeopleCount Component は AWS Greengrass v2 で動作する、AI物体検知用コンポーネントです。機械学習モデルを利用してカメラに映った人物を検出し、指定されたエリアに出入りする人の数をカウントし、クラウドへ送信します。これによって、展示会や会議などのイベントでの混雑状況を監視することが可能になります。
+People counter for events Component は AWS Greengrass v2 で動作する、AI物体検知用コンポーネントです。機械学習モデルを利用してカメラに映った人物を検出し、指定されたエリアに出入りする人の数をカウントし、クラウドへ送信します。これによって、展示会や会議などのイベントでの混雑状況を監視することが可能になります。
 
 # How it works
 AIモデルでの物体検知により、ある一定の範囲にいる人の数をカメラ映像からカウントする。継続的に検知を行い、領域から人が出たら-1, 入ったら+1することで全体の人数をカウントする。
