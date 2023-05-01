@@ -1,8 +1,8 @@
-# AWS VizCounter
+# People counter for events
 
 ## Overview
 
-AWS VizCounter provide vue.js front page include total counter and currunt counter. </br>
+People counter for events provide vue.js front page include total counter and currunt counter. </br>
 
 ## Pre-Requisites
 
@@ -11,7 +11,7 @@ AWS VizCounter provide vue.js front page include total counter and currunt count
 ### AWS environment
 
 -   An IAM user with administrator privileges
--   VizCounter's AWS backend resource, such ad Amazon Kinesis, AWS Lambda, Amazon DynamoDB or any oher resource. Please check [here](https://gitlab.aws.dev/vizcounter-dev/people_count)
+-   People counter for events's AWS backend resource, such ad Amazon Kinesis, AWS Lambda, Amazon DynamoDB or any oher resource. Please check [here](https://github.com/aws-samples/people-counter-for-events/tree/main/people_count)
 
 ### Hardware (PC for operation)
 
